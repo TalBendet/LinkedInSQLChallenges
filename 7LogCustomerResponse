@@ -1,6 +1,0 @@
--- Goal: Add a customer to the PartyAttendees based on a given email and guest count
-
-INSERT INTO PartyAttendees (CustomerID, PartySize)
-    VALUES ((SELECT CustomerID FROM Customers WHERE Email = 'atapley2j@kinetecoinc.com'), '4');
-
-SELECT * FROM PartyAttendees;
