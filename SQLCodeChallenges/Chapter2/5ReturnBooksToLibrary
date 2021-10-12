@@ -1,0 +1,24 @@
+-- Goal: return 3 books that were returned on July 5, 2020
+-- Book 1 Barcode: 6435968624
+-- Book 2 Barcode: 5677520613
+-- Book 3 Barcode: 8730298424
+
+-- Find the BookID given a barcode
+SELECT BookID FROM Books
+WHERE Barcode = 6435968624;
+
+-- Retun a list of BookIDs to return
+SELECT BookID FROM Books
+WHERE Barcode IN (6435968624,5677520613,8730298424);
+
+-- Update ReturnedDate to 2020-07-05 for the returned books
+UPDATE Loans SET ReturnedDate = '2020-07-05'
+WHERE BookID IN (SELECT BookID FROM Books
+                    WHERE Barcode IN (6435968624,5677520613,8730298424))
+      AND ReturnedDate IS NULL;
+
+-- Check if query was executed successfully      
+SELECT * FROM Loans
+ORDER BY ReturnedDate DESC;
+
+-- 

@@ -1,0 +1,29 @@
+-- Goal: find the number of available copies of Dracula
+
+-- Find how many total Dracula books are avialable
+SELECT * FROM Books WHERE Title = 'Dracula';
+
+SELECT Count(*) FROM Books WHERE Title = 'Dracula';
+-- There are three copies of Dracula
+
+-- Display how many checked out copies of Dracula
+-- Display list of books
+SELECT l.LoanID, b.Title, b.BookID, l.ReturnedDate FROM Loans AS l
+JOIN Books AS b ON l.BookID = b.BookID
+WHERE b.Title = 'Dracula' AND l.ReturnedDate IS NULL;
+
+-- Display count of books
+SELECT Count(b.Title) AS "Checked Out Books" FROM Loans AS l
+JOIN Books AS b ON l.BookID = b.BookID
+WHERE b.Title = 'Dracula' AND l.ReturnedDate IS NULL;
+
+-- Display how many Dracula books are available to check out
+SELECT  
+(
+        (SELECT COUNT(*) FROM Books WHERE Title = 'Dracula')
+        -
+        (SELECT Count(b.Title) AS "Available Books" FROM Loans AS l
+        JOIN Books AS b ON l.BookID = b.BookID
+        WHERE b.Title = 'Dracula' AND l.ReturnedDate IS NULL)
+)
+AS "Available Books";

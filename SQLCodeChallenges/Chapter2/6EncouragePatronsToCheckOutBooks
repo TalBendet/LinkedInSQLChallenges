@@ -1,0 +1,22 @@
+-- Goal: Create a report showing the 10 patrons who have checked out the fewest books
+
+-- Display the 10 patrons with fewest loan count
+SELECT PatronID, COUNT(LoanID) AS "Loan Count" FROM Loans
+GROUP BY PatronID
+ORDER BY "Loan Count" ASC
+LIMIT 10;
+
+-- Display the 10 patrons with fewest loan count with patron info (using subquery)
+SELECT p.FirstName, p.LastName, p.Email, ct."Loan Count" FROM 
+    (SELECT PatronID, COUNT(LoanID) AS "Loan Count" FROM Loans
+    GROUP BY PatronID
+    ORDER BY "Loan Count" ASC
+    LIMIT 10) AS ct
+    JOIN Patrons AS p ON ct.PatronID = p.PatronID;
+    
+-- Display the 10 patrons with fewest loan count with patron info (not using subquery)
+SELECT p.FirstName, p.LastName, p.Email, Count(l.LoanID) AS "Loan Count" FROM Loans AS l
+JOIN Patrons AS p ON l.PatronID = p.PatronID
+GROUP BY l.PatronID
+ORDER BY "Loan Count" ASC
+LIMIT 10; 

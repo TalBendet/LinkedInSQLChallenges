@@ -1,0 +1,17 @@
+-- Goal: create a list of books from the 1890s that are currently available
+
+-- Create list of books that are currently unavailable
+SELECT BOOKID FROM Loans
+WHERE ReturnedDate IS NULL;
+
+-- Create list of available books
+SELECT * FROM Books
+WHERE BookID NOT IN (SELECT BOOKID FROM Loans
+                    WHERE ReturnedDate IS NULL);
+                    
+-- Create list of available books from the 1890s
+SELECT * FROM Books
+WHERE BookID NOT IN (SELECT BOOKID FROM Loans
+                    WHERE ReturnedDate IS NULL)
+      AND Published LIKE '189_';
+-- Can also filter published year with >=1890 and <1900

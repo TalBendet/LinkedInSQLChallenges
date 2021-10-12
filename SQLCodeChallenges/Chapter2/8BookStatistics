@@ -1,0 +1,22 @@
+-- Goal: create 2 reports
+-- Report 1: shows how many books were published each year
+-- Report 2: create a report showing the five most popular books to check out
+
+-- Report 1
+SELECT Published, Count(Title) AS "Title Count"
+FROM (SELECT DISTINCT Title, Published, Title FROM Books)
+GROUP BY Published
+ORDER BY "Title Count" DESC;
+
+SELECT Published, COUNT(DISTINCT Title) AS "Title Count"
+FROM Books
+GROUP BY Published
+ORDER BY "Title Count" DESC;
+
+-- Report 2
+SELECT b.Title, Count(b.Title) AS "Total Check Outs"
+FROM Loans AS l
+JOIN Books AS b ON l.BookID = b.BookID
+GROUP BY b.Title
+ORDER BY "Total Check Outs" DESC
+LIMIT 5;

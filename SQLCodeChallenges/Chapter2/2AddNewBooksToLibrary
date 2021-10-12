@@ -1,0 +1,20 @@
+-- Goal: add 2 new books to the library
+
+-- Book 1
+-- Title: Dracula
+-- Author: Bram Stoker
+-- Year: 1897
+-- New ID: 4819277482
+
+-- Book 2
+-- Title: Gulliver's Travels
+-- Author: Jonathan Swift
+-- Year: 1729
+-- New ID: 4899254401
+
+SELECT * FROM Books;
+
+INSERT INTO Books (Title, Author, Published, Barcode)
+    VALUES ('Dracula', 'Bram Stoker', 1897, 4819277482),('Gulliver''s Travels', 'Jonathan Swift', 1729, 4899254401);
+    
+SELECT * FROM Books;

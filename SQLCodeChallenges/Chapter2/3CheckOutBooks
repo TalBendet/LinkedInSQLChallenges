@@ -1,0 +1,36 @@
+-- Goal: check out 2 books to a specific patron
+-- Book 1: The picture of Dorian Gray, 2855934983
+-- Book 2: Great Expectations, 4043822646
+-- Check out date: Aug. 25, 2020
+-- Due date: Sep. 8, 2020
+-- Patron: Jack Vaan, jvaan@wisdompets.com
+
+-- Find PatronID from given info
+SELECT PatronID FROM Patrons
+WHERE Email = 'jvaan@wisdompets.com'; 
+-- PatronID = 50
+
+-- Find BookID for specific book
+SELECT BookID FROM Books
+WHERE Barcode IN (2855934983,4043822646);
+-- BookIDs = 11,93
+
+-- Check to see if the books are already checked out
+SELECT * FROM Loans
+WHERE BookID IN ((SELECT BookID FROM Books
+                    WHERE Barcode IN (2855934983,4043822646)))
+        AND ReturnedDate IS NULL;
+-- Returns blank table, books are availale to be checked out
+
+-- Check out books by adding to Loans table
+INSERT INTO Loans (BookID, PatronID, LoanDate, DueDate)
+VALUES ((SELECT BookID FROM Books WHERE Barcode = 2855934983),
+        (SELECT PatronID FROM Patrons WHERE Email = 'jvaan@wisdompets.com'),
+         '2020-08-25',
+         '2020-09-08'),
+       ((SELECT BookID FROM Books WHERE Barcode = 4043822646),
+        (SELECT PatronID FROM Patrons WHERE Email = 'jvaan@wisdompets.com'),
+         '2020-08-25',
+         '2020-09-08');
+       
+SELECT * FROM Loans;
