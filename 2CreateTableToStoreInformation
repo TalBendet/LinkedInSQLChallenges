@@ -1,0 +1,8 @@
+--Goal: create a table to store CustomerID, PartySize
+
+CREATE TABLE PartyAttendees (
+    CustomerID INT,
+    PartySize INT
+);
+
+SELECT * FROM PartyAttendees;

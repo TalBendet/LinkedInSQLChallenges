@@ -1,0 +1,5 @@
+--Goal: generate a list of all customers with first name, last name, and email. Sort by last name
+
+SELECT FirstName, LastName, Email
+FROM Customers
+ORDER BY LastName;
