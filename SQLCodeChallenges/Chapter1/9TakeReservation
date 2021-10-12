@@ -1,0 +1,34 @@
+-- Goal: Take a reservation based on given customer identification, not worrying about available times or capacity
+-- Name: Sam McAdams
+-- Date/Time: 14 July 2020, 6 PM
+-- Party Size: 5
+-- Email: smac@rouxacademy.com
+-- Phone: (555) 555-1212
+
+-- Checking to see if the customer exists in the customer table
+SELECT * FROM Customers WHERE Email = 'smac@rouxacademy.com';
+--Customer does not exist
+
+-- Adding the customer to the Customers table
+INSERT INTO Customers (FirstName, LastName, Email, Phone)
+    VALUES ('Sam', 'McAdams', 'smac@rouxacademy.com', '(555) 555-1212');
+-- Customer added to the Customers table
+
+-- Checking to see if the customer exists in the customer table
+SELECT * FROM Customers WHERE Email = 'smac@rouxacademy.com';
+--Customer does exist
+
+SELECT * FROM Reservations;
+
+-- Add customer to the reservation list
+INSERT INTO Reservations (CustomerID, Date, PartySize)
+    VALUES ((SELECT CustomerID FROM Customers WHERE Email = 'smac@rouxacademy.com'), '2020-07-14 18:00:00', 5);
+
+
+-- Check if the reservation was added with the correct info    
+SELECT c.FirstName, c.LastName, r.Date, r.PartySize, c.Email, c.Phone FROM Reservations as r
+    JOIN Customers as c
+        ON r.CustomerID = c.CustomerID
+    WHERE r.CustomerID = (SELECT CustomerID FROM Customers WHERE Email = 'smac@rouxacademy.com');
+
+

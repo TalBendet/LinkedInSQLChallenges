@@ -1,0 +1,15 @@
+--Goal: create 3 menus
+--1. All items from the dish table sorted by price, low to high
+--2. Appetizers and beverages sorted by type
+--3. All items except beverages, sorted by type
+
+-- Menu 1
+SELECT * FROM Dishes ORDER BY Price;
+
+-- Menu 2
+SELECT * FROM Dishes WHERE Type IN ('Beverage', 'Appetizer') ORDER BY Type;
+SELECT * FROM Dishes WHERE Type = 'Beverage' OR Type = 'Appetizer' ORDER BY Type;
+
+-- Menu 3
+SELECT * FROM Dishes WHERE Type NOT IN ('Beverage') ORDER BY Type;
+SELECT * FROM Dishes WHERE Type != 'Beverage' ORDER BY Type;
