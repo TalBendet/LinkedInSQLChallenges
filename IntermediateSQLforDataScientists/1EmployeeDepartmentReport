@@ -1,0 +1,6 @@
+-- Goal: Write a query that returns the employee's last name, email, and department name for employees with salaries greater than 120000
+
+SELECT e.last_name, e.email, cd.department_name
+FROM employees AS e
+JOIN company_departments AS cd ON e.department_id = cd.id
+WHERE e.salary > 120000;

@@ -1,0 +1,4 @@
+-- Goal: write a query to return department_id, last_name, salary, sum of all salaries in a department without using subqueries
+
+SELECT department_id, last_name, salary, SUM(salary) OVER (PARTITION BY department_id)
+FROM employees;

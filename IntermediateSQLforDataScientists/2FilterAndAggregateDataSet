@@ -1,0 +1,7 @@
+-- Goal: write a query that returns the count of employees in departments where the total salary paid in that department is greater than 5 million
+
+SELECT department_id, COUNT(last_name) "Count of Employees", SUM(salary) AS "Total Salary"
+FROM employees
+GROUP BY department_id
+HAVING "Total Salary" > 5000000
+ORDER BY "Total Salary" DESC;

@@ -1,0 +1,23 @@
+-- Goal: change the query from using a subquery to using a Common Table Expression (CTE)
+
+-- Original Query
+SELECT SUM(salary), ROUND(AVG(salary),2)
+FROM employees AS e2
+WHERE e2.region_id in (SELECT id
+                       FROM company_regions AS cr
+                       WHERE region_name LIKE '%east%');
+                       
+
+-- Rewritten Query
+WITH east_regions AS
+    (SELECT id FROM company_regions AS cr WHERE cr.region_name LIKE '%east%')
+SELECT SUM(salary), ROUND(AVG(salary),2)
+FROM employees AS e2
+WHERE e2.region_id IN east_regions; 
+
+-- Another solution
+WITH east_regions AS
+    (SELECT id FROM company_regions AS cr WHERE cr.region_name LIKE '%east%')
+SELECT SUM(e2.salary), ROUND(AVG(e2.salary),2)
+FROM employees AS e2
+JOIN east_regions AS er ON e2.region_id = er.id;
