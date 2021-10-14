@@ -1,0 +1,32 @@
+-- Goal: Write a query to report the number of vaccinations each animal has received. Include animals that were never vaccinated
+-- Exclude rabbits, rabies vaccines, and animals that were last vaccinated on or after October 1, 2019
+-- The report should show the animals name, species, primary color, breed, and the number of vaccinations
+-- Use the correct logical join types and force order if necessary
+-- Use the correct logical group by expression
+
+SELECT a.name, a.species, a.primary_color, a.breed, COUNT(v.vaccine) AS "Count of Vaccines"
+FROM animals AS a
+LEFT JOIN vaccinations AS v
+ON a.name = v.name AND a.species = v.species
+WHERE a.species != 'Rabbit' AND (v.vaccine != 'Rabies' OR v.vaccine IS NULL)
+GROUP BY a.name, a.species
+HAVING (MAX(DATE(v.vaccination_time)) < '2019-10-01' OR MAX(DATE(v.vaccination_time)) IS NULL)
+ORDER BY "Count of Vaccines" DESC;
+
+-- Another solution
+SELECT a.species,
+	   a.name,
+	   MAX(a.primary_color) AS Primary_Color, -- Dummy aggregate
+	   MAX(a.breed) AS Breed, -- Dummy aggregate
+	   COUNT(v.vaccine), COUNT(*)
+FROM animals AS a
+LEFT JOIN
+	Vaccinations AS v
+	ON v.name = a.name AND v.species = a.species
+WHERE a.species != 'Rabbit' AND (v.vaccine != 'Rabies' OR v.vaccine IS NULL)
+GROUP BY a.species, a.name
+HAVING (MAX(DATE(v.vaccination_time)) < '2019-10-01' OR MAX(DATE(v.vaccination_time)) IS NULL)
+ORDER BY a.species, a.name
+
+-- Both solutions return the same output. The difference is that the second solution uses dummy aggregates for fields
+--      that were not included in the group by clause

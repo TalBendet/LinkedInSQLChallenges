@@ -1,0 +1,20 @@
+-- Goal: Write a query to report animals and their vaccination status
+-- Include animals that have not been vaccinated
+-- The report should show the animal's name, species, breed, primary color,
+--      vaccination time, vaccine name, staff member's first name, last name, role
+-- Use the minimal number of tables required
+-- Use the correct logical join types and force join order as needed
+
+SELECT a.name, a.species, a.breed, a.primary_color, v.vaccination_time, v.vaccine, p.first_name, p.last_name, sa.role
+FROM animals AS a
+LEFT JOIN 
+	(vaccinations AS v
+	JOIN 
+	 	(persons as p
+	 	JOIN
+	  	staff_assignments as sa
+	  	ON
+	  	p.email = sa.email)
+	ON v.email = p.email)
+ON a.name = v.name AND a.species = v.species
+ORDER BY a.name, a.species, a.breed, v.vaccination_time;  
