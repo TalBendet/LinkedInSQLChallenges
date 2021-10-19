@@ -1,0 +1,46 @@
+-- Goal: Write a query to report the students being "quite" in ALL exams.
+-- "Quite" = taken at least one test and didn't score either the highest or the lowest score.
+
+-- Solution 1: checking each exam entry to see if matching the "quite" criteria
+--     then aggregating over all entries for each student to see if they are quite or not (sum < 1 or max < 1)
+SELECT student_id, student_name  
+FROM
+(SELECT student_id, student_name, CASE WHEN score = maximum OR score = minimum THEN 1 ELSE 0 END AS quite
+FROM (SELECT s.student_id, s.student_name, e.exam_id, e.score,
+    MAX(e.score) OVER (PARTITION BY exam_id) AS maximum,
+    MIN(e.score) OVER (PARTITION BY exam_id) AS minimum 
+FROM student AS s
+JOIN exam AS e 
+    ON s.student_id = e.student_id
+))
+GROUP BY student_id
+HAVING SUM(quite) < 1;
+
+
+-- Another solution (same as solution 1 but using CTE)
+WITH quite_students AS
+(SELECT student_id, student_name, CASE WHEN score = maximum OR score = minimum THEN 1 ELSE 0 END AS quite
+FROM (SELECT s.student_id, s.student_name, e.exam_id, e.score,
+    MAX(e.score) OVER (PARTITION BY exam_id) AS maximum,
+    MIN(e.score) OVER (PARTITION BY exam_id) AS minimum 
+FROM student AS s
+JOIN exam AS e 
+    ON s.student_id = e.student_id
+))
+SELECT student_id, student_name  
+FROM quite_students
+GROUP BY student_id
+HAVING SUM(quite) < 1;
+
+-- Solution 2: generating a list of students that are not quite, then getting the inverse of that list
+WITH quite_students AS
+    (SELECT student_id
+    FROM
+        (SELECT *, MIN(score) OVER (PARTITION BY exam_id) AS minimum, MAX(score) OVER (PARTITION BY exam_id) AS maximum
+         FROM exam)
+    WHERE score = maximum OR score = minimum)
+SELECT DISTINCT s.student_id, s.student_name
+FROM student AS s
+JOIN exam AS e
+    ON s.student_id = e.student_id
+WHERE s.student_id NOT IN (SELECT student_id FROM quite_students);

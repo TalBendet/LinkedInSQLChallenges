@@ -1,0 +1,35 @@
+-- Goal: Display the comparison result (higher/lower/same) of the average salary of employees in a department to the company's average salary
+
+WITH average_data AS
+(
+    SELECT s.pay_date, e.department_id, s.employee_id, s.amount,
+    -- Find the average for the department in a given month
+    AVG(s.amount) OVER (PARTITION BY e.department_id, s.pay_date) AS dept_avg,
+    -- Find the average for the company in a given month
+    AVG(s.amount) OVER (PARTITION BY s.pay_date) AS company_avg
+    FROM salary as s
+    JOIN employee AS e
+        ON s.employee_id = e.employee_id
+)
+SELECT DISTINCT SUBSTR(pay_date,1,7) AS pay_month, department_id, 
+    (IIF(dept_avg > company_avg, 'Higher', IIF(dept_avg = company_avg, 'Same', 'Lower'))) AS comparison   
+FROM average_data
+ORDER BY pay_month DESC;
+
+-- Can also use case statement instead of if function
+WITH average_data AS
+(
+    SELECT s.pay_date, e.department_id, s.employee_id, s.amount,
+    -- Find the average for the department in a given month
+    AVG(s.amount) OVER (PARTITION BY e.department_id, s.pay_date) AS dept_avg,
+    -- Find the average for the company in a given month
+    AVG(s.amount) OVER (PARTITION BY s.pay_date) AS company_avg
+    FROM salary as s
+    JOIN employee AS e
+        ON s.employee_id = e.employee_id
+)
+SELECT DISTINCT SUBSTR(pay_date,1,7) AS pay_month, department_id, 
+    CASE WHEN dept_avg > company_avg THEN 'Higher' WHEN dept_avg = company_avg THEN 'Same' ELSE 'Lower' END AS comparison   
+FROM average_data
+ORDER BY pay_month DESC;
+
