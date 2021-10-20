@@ -1,0 +1,19 @@
+-- Goal: write a query to display the records which have 3 or more consecutive rows with the amount of people greater than or equal to 100
+
+-- Solution: identify which rows fit the criteria by assigning a unique streak_id for each time the first row
+--     of over 100 was hit after rows of less than 100 (done by using the row id subtracted by the row number.
+--     Then, compute the totals of each streak by counting by streak id, and then filtering for those counts that were 3 or greater
+WITH date_streaks AS
+    (SELECT id, visit_date, people, id - ROW_NUMBER() OVER(ORDER BY visit_date) AS streak_id
+     FROM stadium
+     WHERE people >= 100) 
+            
+SELECT date_streaks.id, date_streaks.visit_date, date_streaks.people
+FROM date_streaks
+JOIN (
+            -- table that identifies the length of each date streak 
+            SELECT streak_id, COUNT(*) as streak_count
+            FROM date_streaks
+            GROUP BY streak_id) AS date_streak_totals
+ON date_streaks.streak_id = date_streak_totals.streak_id
+WHERE date_streak_totals.streak_count > 2;
